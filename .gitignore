@@ -1,0 +1,27 @@
+# Genel sistem dosyaları
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+
+# React Frontend için
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+.env
+
+# .NET / C# (Backend için)
+bin/
+obj/
+*.db
+*.sqlite
+appsettings.json
+appsettings.Development.json
+
+# IDE ve editör dosyaları
+.vscode/
+.idea/
+*.suo
+*.user
+*.csproj.user
