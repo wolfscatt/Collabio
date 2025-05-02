@@ -1,4 +1,4 @@
-const ROLES = require('./roleEnum');
+const {ROLES} = require('./roleEnum');
 
 const PERMISSIONS = {
     CREATE: 'create',

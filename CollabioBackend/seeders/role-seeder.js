@@ -1,7 +1,8 @@
 const db = require('../services/connectionDb'); 
 const mongoose = require('mongoose');
 const RoleSchema = require('../models/Role');
-const { ROLES, PERMISSIONS } = require('../enums/roleEnum');
+const {ROLES } = require('../enums/roleEnum');
+const {ROLE_PERMISSIONS}  = require('../enums/permissions');
 const seedRoles = async () => {
     console.log('Seeding roles started...');
 
@@ -12,10 +13,12 @@ const seedRoles = async () => {
 
         console.log("Cleaning up existing roles...");
         await RoleSchema.deleteMany({}, { session });
-
+        console.log("ROLES:", ROLES);
+        console.log("ROLE_PERMISSIONS:", ROLE_PERMISSIONS);
+        
         for (const roleName of Object.values(ROLES)) {
             const role = roleName;
-            const permissions = PERMISSIONS[roleName];
+            const permissions = ROLE_PERMISSIONS[role];
 
             const existingRole = await RoleSchema.findOne({ name: role }).session(session);
             if (existingRole) {

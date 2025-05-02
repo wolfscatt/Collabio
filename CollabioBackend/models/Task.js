@@ -39,6 +39,7 @@ const TaskSchema = new mongoose.Schema({
   projectId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Project',
+    required: true
   },
   assignee: {
     type: mongoose.Schema.Types.ObjectId,
@@ -56,4 +57,4 @@ const TaskSchema = new mongoose.Schema({
   timestamps: true
 });
 
-module.exports = mongoose.model('Issue', TaskSchema); 
+module.exports = mongoose.model('Task', TaskSchema); 
