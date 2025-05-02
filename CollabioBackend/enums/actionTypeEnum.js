@@ -1,0 +1,10 @@
+const ACTIONTYPES = {
+    CREATE_TASK: 'create_task',
+    UPDATE_TASK: 'update_task',
+    DELETE_TASK: 'delete_task',
+    ADD_COMMENT: 'add_comment',
+    UPLOAD_FILE: 'upload_file',
+    CHANGE_STATUS: 'change_status',
+}
+
+module.exports = ACTIONTYPES;
