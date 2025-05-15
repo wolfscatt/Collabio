@@ -10,12 +10,13 @@ const LogSchema = new mongoose.Schema({
     actionType:{
         type: String,
         enum: [
-            ACTIONTYPES.CREATETASK,
-            ACTIONTYPES.UPDATETASK,
-            ACTIONTYPES.DELETETASK,
-            ACTIONTYPES.ADDCOMMENT,
-            ACTIONTYPES.UPLOADFILE,
-            ACTIONTYPES.CHANGESTATUS
+            ACTIONTYPES.CREATE_TASK,
+            ACTIONTYPES.UPDATE_TASK,
+            ACTIONTYPES.DELETE_TASK,
+            ACTIONTYPES.ADD_COMMENT,
+            ACTIONTYPES.UPLOAD_FILE,
+            ACTIONTYPES.CHANGE_STATUS,
+            ACTIONTYPES.APPROVE_TASK,
         ],
         required: true
     },

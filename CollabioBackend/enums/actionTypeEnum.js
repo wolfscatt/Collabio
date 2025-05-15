@@ -5,6 +5,7 @@ const ACTIONTYPES = {
     ADD_COMMENT: 'add_comment',
     UPLOAD_FILE: 'upload_file',
     CHANGE_STATUS: 'change_status',
+    APPROVE_TASK: 'approve_task',
 }
 
 module.exports = ACTIONTYPES;
