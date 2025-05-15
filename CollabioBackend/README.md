@@ -8,7 +8,7 @@
 ## 👤 Kullanıcı (Auth) Endpoints
 
 ### 🔹 Kayıt Olma
-```
+```bash
 POST /auth/register
 ```
 **Body:**
@@ -20,7 +20,7 @@ POST /auth/register
 }
 ```
 ### 🔹 Giriş Yapma
-```
+```bash
 POST /auth/login
 ```
 **Body:**
@@ -37,12 +37,12 @@ POST /auth/login
 ## 📁 Proje (Project) Endpoints
 
 ### 🔹 Projeleri Listele
-```
+```bash
 GET /projects
 ```
 
 ### 🔹 Yeni Proje Oluştur
-```
+```bash
 POST /projects
 ```
 **Body:**
@@ -55,12 +55,12 @@ POST /projects
 }
 ```
 ### 🔹 Proje Güncelle
-```
+```bash
 PUT /projects/:id
 ```
 
 ### 🔹 Proje Sil
-```
+```bash
 DELETE /projects/:id
 ```
 
@@ -71,12 +71,12 @@ DELETE /projects/:id
 ## ✅ Görev (Task) Endpoints
 
 ### 🔹 Projeye Ait Görevleri Listele
-```
+```bash
 GET /tasks/:projectId
 ```
 
 ### 🔹 Yeni Görev Oluştur
-```
+```bash
 POST /tasks
 ```
 **Body**
@@ -93,7 +93,7 @@ POST /tasks
 ```
 
 ### 🔹 Görev Güncelle
-```
+```bash
 PUT /tasks/:id
 ```
 
