@@ -4,6 +4,7 @@ const taskRoutes = require('./taskRoutes')
 const commentRoutes = require('./commentRoutes')
 const logRoutes = require('./logRoutes')
 const attachmentRoutes = require('./attachmentRoutes')
+const userRoutes = require('./userRoutes')
 
 const express = require('express')
 const router = express.Router()
@@ -15,6 +16,6 @@ router.use('/tasks', taskRoutes)
 router.use('/comments', commentRoutes)
 router.use('/logs', logRoutes)
 router.use('/attachments', attachmentRoutes)
-
+router.use('/users', userRoutes)
 
 module.exports = router

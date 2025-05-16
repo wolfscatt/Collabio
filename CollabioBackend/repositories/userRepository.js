@@ -9,7 +9,13 @@ const createUser = async (data) => {
   return await user.save();
 };
 
+const getById = async (id) => {
+  return await User.findById(id).select('-password').populate('role', 'name permissions');
+};
+
+
 module.exports = {
   findByEmail,
-  createUser
+  createUser,
+  getById,
 };
