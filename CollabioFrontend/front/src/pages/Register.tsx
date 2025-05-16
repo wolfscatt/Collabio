@@ -1,4 +1,5 @@
 import React from "react";
+import RegInput from "../../components/RegInput";
 
 const Register = () => {
   return (
@@ -8,28 +9,9 @@ const Register = () => {
           Sign up
         </h1>
         <form className="space-y-4 mb-16">
-          <div className="space-y-2">
-            <label htmlFor="name" className="block text-sm text-black pl-4">
-              Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              className="w-full px-4 py-2 rounded-lg border-2 border-specPurple-300 bg-transparent text-black placeholder-gray-400 focus:outline-none focus:border-purple-500"
-              placeholder="Enter your name"
-            />
-          </div>
-          <div className="space-y-2 mb-8">
-            <label htmlFor="password" className="block text-sm text-black pl-4">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              className="w-full px-4 py-2 rounded-lg border-2 border-specPurple-300 bg-transparent text-black placeholder-gray-400 focus:outline-none focus:border-purple-500"
-              placeholder="Enter your password"
-            />
-          </div>
+        <RegInput title="Name" id="name" type="text" placeHolder="Enter Your Name" />
+        <RegInput title="Password" id="password" type="password" placeHolder="Enter Your Password" />
+          
           <button
             type="submit"
             className="w-full bg-purple-800 text-white py-2 rounded-lg hover:bg-purple-900 transition-colors flex items-center justify-center gap-2"

@@ -2,14 +2,30 @@
 module.exports = {
   content: [
     "./app/**/*.{js,ts,jsx,tsx}",
-    "./pages/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
     "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/app/**/*.{js,ts,jsx,tsx}",
+    "./src/pages/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
       backgroundImage: {
         register: "url('/images/bg-register.png')",
+      },
+      keyframes: {
+        wave: {
+          '0%': { boxShadow: '0 0 0 0 rgba(0, 123, 255, 0.5)' },
+          '70%': { boxShadow: '0 0 0 10px rgba(0, 123, 255, 0)' },
+          '100%': { boxShadow: '0 0 0 0 rgba(0, 123, 255, 0)' },
+        },
+        wiggle: {
+          '0%, 100%': { transform: 'rotate(-1deg)' },
+          '50%': { transform: 'rotate(1deg)' },
+        },
+      },
+      animation: {
+        wave: 'wave 1s ease-out',
+        wiggle: 'wiggle 0.3s ease-in-out infinite',
       },
       colors: {
         specPurple: {
