@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('../utils/bcrypt');
+const ROLES = require('../enums/roleEnum');
 
 const UserSchema = new mongoose.Schema({
-  name: {
+  username: {
     type: String,
     required: true
   },
@@ -15,14 +16,17 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  role: {
-    type: String,
-    enum: ['admin', 'pm', 'user'],
-    default: 'user'
+  profilePictureUrl:{
+    type: String
   },
-  projects: [{
+  role: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Project'
+    ref: 'Role',
+    default: ROLES.USER 
+  },
+  teams: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Team'
   }]
 }, {
   timestamps: true
@@ -32,8 +36,7 @@ UserSchema.pre('save', async function(next) {
   if (!this.isModified('password')) return next();
   
   try {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
+    this.password = await bcrypt.hashPassword(this.password);
     next();
   } catch (error) {
     next(error);
@@ -41,7 +44,7 @@ UserSchema.pre('save', async function(next) {
 });
 
 UserSchema.methods.comparePassword = async function(candidatePassword) {
-  return bcrypt.compare(candidatePassword, this.password);
+  return bcrypt.comparePassword(candidatePassword, this.password);
 };
 
 module.exports = mongoose.model('User', UserSchema); 
