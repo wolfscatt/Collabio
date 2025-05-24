@@ -34,6 +34,8 @@ const ActivityItem: React.FC<ActivityItemProps> = ({
                     src={`https://ui-avatars.com/api/?name=${initials}&background=${avatarBg}&color=${avatarColor}`}
                     alt={name}
                     className="rounded-full w-full h-full"
+                    width={100}
+                    height={100}
                 />
             </div>
 

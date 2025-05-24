@@ -1,28 +1,72 @@
-'use client'
-import React, { useState } from 'react';
+"use client";
+
+import { useEffect, useState } from 'react';
 import { DragDropContext, DropResult } from '@hello-pangea/dnd';
 import TaskColumn from './TaskColumn';
+import { useProjectTasks } from '@/hooks/useProjectTasks';
 
-const initialData = {
-    yapılacaklar: [
-        { id: '1', title: 'İş akışları', code: 'COL-12', author: 'Bahri Talha Baş', date: '20 Mar 2025' },
-        { id: '22', title: 'İş akışları', code: 'COL-12', author: 'Bahri Talha Baş', date: '20 Mar 2025' },
-        { id: '35', title: 'İş akışları', code: 'COL-12', author: 'Bahri Talha Baş', date: '20 Mar 2025' },
-    ],
-    devam: [
-        { id: '2', title: 'Api geliştirme', code: 'COL-3', author: 'Ömer Faruk Bingöl', date: '20 Mar 2025' },
-        { id: '3', title: 'Api geliştirme', code: 'COL-3', author: 'Ömer Faruk Bingöl', date: '20 Mar 2025' },
-        { id: '4', title: 'Api geliştirme', code: 'COL-3', author: 'Ömer Faruk Bingöl', date: '20 Mar 2025' },
-    ],
-    beklemede: [{ id: '222', title: 'Api geliştirme', code: 'COL-3', author: 'Ömer Faruk Bingöl', date: '20 Mar 2025' },
-    { id: '3222', title: 'Api geliştirme', code: 'COL-3', author: 'Ömer Faruk Bingöl', date: '20 Mar 2025' },
-    { id: '422', title: 'Api geliştirme', code: 'COL-3', author: 'Ömer Faruk Bingöl', date: '20 Mar 2025' },
-    ],
-    tamam: [],
+interface TaskCardData {
+    id: string;
+    title: string;
+    author: string;
+    date: string;
+}
+
+type ColumnsType = {
+    yapılacaklar: TaskCardData[];
+    devam: TaskCardData[];
+    beklemede: TaskCardData[];
+    tamam: TaskCardData[];
 };
 
-const TaskBoard: React.FC = () => {
-    const [columns, setColumns] = useState(initialData);
+const TaskBoard: React.FC<{ reload: boolean }> = ({ reload }) => {
+    const { tasks, loading } = useProjectTasks(reload);
+
+    const [columns, setColumns] = useState<ColumnsType>({
+        yapılacaklar: [],
+        devam: [],
+        beklemede: [],
+        tamam: []
+    });
+    useEffect(() => {
+        if (loading || tasks.length === 0) return;
+
+        const grouped: ColumnsType = {
+            yapılacaklar: [],
+            devam: [],
+            beklemede: [],
+            tamam: [],
+        };
+
+        tasks.forEach((task) => {
+            const mapped: TaskCardData = {
+                id: task._id,
+                title: task.title,
+                author: task.assignee?.username || "Atanmamış",
+                date: new Date(task.startDate || task.createdAt).toLocaleDateString("tr-TR"),
+            };
+
+            switch (task.status) {
+                case "to-do":
+                    grouped.yapılacaklar.push(mapped);
+                    break;
+                case "in-progress":
+                    grouped.devam.push(mapped);
+                    break;
+                case "pending":
+                    grouped.beklemede.push(mapped);
+                    break;
+                case "done":
+                    grouped.tamam.push(mapped);
+                    break;
+                default:
+                    grouped.yapılacaklar.push(mapped);
+            }
+        });
+
+        setColumns(grouped);
+    }, [tasks, loading, reload]);
+
 
     const onDragEnd = (result: DropResult) => {
         const { source, destination } = result;
@@ -38,6 +82,8 @@ const TaskBoard: React.FC = () => {
             [source.droppableId]: sourceCol,
             [destination.droppableId]: destCol,
         });
+
+        // TODO: Backend güncellemesi yapılabilir burada
     };
 
     return (

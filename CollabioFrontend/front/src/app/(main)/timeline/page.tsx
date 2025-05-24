@@ -1,11 +1,11 @@
 "use client"
 import React, { useState } from 'react'
 import { FaCheck, FaFilter, FaUndo } from 'react-icons/fa';
-import FilterSelect from '../../../components/TimelineComps/FilterSelect';
-import ActivityItem from '../../../components/TimelineComps/ActivityItem';
+import FilterSelect from '../../../../components/TimelineComps/FilterSelect';
+import ActivityItem from '../../../../components/TimelineComps/ActivityItem';
 
 
-const page = () => {
+const Page = () => {
     const [filterOpen, setFilterOpen] = useState(false);
     const [date, setDate] = useState("today");
     const [activity, setActivity] = useState("all");
@@ -137,4 +137,4 @@ const page = () => {
     );
 }
 
-export default page
+export default Page

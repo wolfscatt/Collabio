@@ -33,7 +33,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
     };
 
     useEffect(() => {
-        const handleScroll = (e: WheelEvent) => {
+        const handleScroll = () => {
             // scroll listener boşta bekletiliyor (isteğe bağlı kullanım için)
         };
         const area = document.getElementById('calendar-scroll-area');

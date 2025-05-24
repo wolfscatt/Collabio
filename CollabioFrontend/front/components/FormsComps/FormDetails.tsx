@@ -24,6 +24,8 @@ const FormDetails: React.FC<FormDetailsProps> = ({ formType }) => {
                     src="/images/collabio-logo.png"
                     alt="logo"
                     className="w-[3vh] h-[3vh] object-contain rounded-sm"
+                    width={100}
+                    height={100}
                 />
                 <h2 className="text-[2vh] font-semibold">
                     Project Collabio - {formTitles[formType]}

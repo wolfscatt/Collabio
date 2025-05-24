@@ -5,7 +5,6 @@ import TaskCard from './TaskCard';
 interface Task {
     id: string;
     title: string;
-    code: string;
     author: string;
     date: string;
 }

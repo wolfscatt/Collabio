@@ -13,6 +13,8 @@ const TaskStatusRow: React.FC<TaskStatusRowProps> = ({ name, avatarUrl }) => {
           src={avatarUrl}
           className="w-10 h-10 rounded-full border-2 border-white shadow"
           alt={avatarUrl}
+          width={100}
+          height={100}
         />
         <span className="text-sm text-[var(--color-dark)]">Ö{name}</span>
       </div>
