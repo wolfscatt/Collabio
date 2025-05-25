@@ -18,7 +18,7 @@ const createProject = async (data, ownerId) => {
 };
 
 const getProjectsByUser = async (userId) => {
-  return await projectRepo.getByOwner(userId);
+  return await projectRepo.getByUser(userId);
 };
 
 const updateProject = async (id, updates, userId) => {
