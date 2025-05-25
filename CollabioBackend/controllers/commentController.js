@@ -4,7 +4,16 @@ const commentService = require('../services/commentService');
 exports.add = async (req, res, next) => {
   try {
     const { content } = req.body;
-    const comment = await commentService.addComment({taskId: req.params.taskId, content}, req.user);
+    const fileUrl = req.file ? `/uploads/comments/${req.file.filename}` : null;
+    const fileName = req.file ? req.file.originalname : null;
+
+    const comment = await commentService.addComment({
+      taskId: req.params.taskId,
+      content,
+      fileUrl,
+      fileName
+    }, req.user);
+
     res.status(201).json(comment);
   } catch (err) {
     next(err);
@@ -23,8 +32,17 @@ exports.getByTask = async (req, res, next) => {
 
 // Yorum güncelleme kontrolcüsü
 exports.update = async (req, res, next) => {
-  try {
-    const comment = await commentService.updateComment(req.params.id, req.user._id, req.body.content);
+ try {
+    const fileUrl = req.file ? `/uploads/comments/${req.file.filename}` : null;
+    const fileName = req.file ? req.file.originalname : null;
+
+    const updates = { content: req.body.content };
+    if (fileUrl) {
+      updates.fileUrl = fileUrl;
+      updates.fileName = fileName;
+    }
+
+    const comment = await commentService.updateComment(req.params.id, req.user._id, updates);
     res.json(comment);
   } catch (err) {
     next(err);

@@ -8,8 +8,8 @@ const getByTaskId = async (taskId) => {
 
 const getById = async (id) => await Comment.findById(id);
 
-const update = async (id, content) => {
-  return await Comment.findByIdAndUpdate(id, { content }, { new: true });
+const update = async (id, updates) => {
+  return await Comment.findByIdAndUpdate(id, updates, { new: true });
 };
 
 const remove = async (id) => await Comment.findByIdAndDelete(id);

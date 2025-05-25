@@ -8,3 +8,13 @@ exports.getByTask = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getLogs = async (req, res, next) => {
+  try {
+    const { startDate, endDate, actionType, taskStatus } = req.query;
+    const logs = await logService.getLogsByFiltered({ startDate, endDate, actionType, taskStatus });
+    res.json(logs);
+  } catch (err) {
+    next(err);
+  }
+};

@@ -4,10 +4,15 @@ const ACTIONTYPES = require('../enums/actionTypeEnum');
 const withLogging = require('../utils/withLogging');
 
 // Yorum ekleme servisi
-const _addComment = async ({taskId, content}, user) => {
-  const comment = await commentRepo.create({ taskId, authorUserId: user._id, content });
+const _addComment = async ({ taskId, content, fileUrl, fileName }, user) => {
+  const comment = await commentRepo.create({
+    taskId,
+    authorUserId: user._id,
+    content,
+    fileUrl,
+    fileName
+  });
 
-  // Task.comments dizisine comment ID'yi ekle
   await taskRepo.update(taskId, {
     $push: { comments: comment._id }
   });
@@ -22,7 +27,7 @@ const getCommentsByTask = async (taskId) => {
 };
 
 // Yorum güncelleme servisi
-const updateComment = async (commentId, userId, content) => {
+const _updateComment = async (commentId, userId, updates) => {
   const comment = await commentRepo.getById(commentId);
   if (!comment) throw new Error('Yorum bulunamadı');
   if (String(comment.authorUserId) !== String(userId)) {
@@ -35,11 +40,11 @@ const updateComment = async (commentId, userId, content) => {
 //     $push: { comments: comment._id }
 //   });
 
-  return await commentRepo.update(commentId, content);
+  return await commentRepo.update(commentId, updates);
 };
-
+const updateComment = withLogging(ACTIONTYPES.UPDATE_COMMENT, _updateComment);
 // Yorum silme servisi
-const deleteComment = async (commentId, userId) => {
+const _deleteComment = async (commentId, userId) => {
   const comment = await commentRepo.getById(commentId);
   if (!comment) throw new Error('Yorum bulunamadı');
   if (String(comment.authorUserId) !== String(userId)) {
@@ -51,10 +56,11 @@ const deleteComment = async (commentId, userId) => {
   await commentRepo.remove(commentId);
 
   // Task.comments listesinden çıkar
-  await taskRepo.update(comment.taskId, {
-    $pull: { comments: comment._id }
-  });
+  await taskRepo.update(comment.taskId, { $pull: { comments: comment._id } });
+  
 };
+const deleteComment = withLogging(ACTIONTYPES.DELETE_COMMENT, _deleteComment);
+
 
 module.exports = {
   addComment,

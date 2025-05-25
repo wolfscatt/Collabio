@@ -8,7 +8,12 @@ const getLogsByTask = async (taskId) => {
   return await logRepo.getByTaskId(taskId);
 };
 
+const getLogsByFiltered = async (filters) => {
+  return await logRepo.getFilteredLogs(filters);
+};
+
 module.exports = {
   createLog,
-  getLogsByTask
+  getLogsByTask,
+  getLogsByFiltered
 };

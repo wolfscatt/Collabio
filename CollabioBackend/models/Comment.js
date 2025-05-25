@@ -15,6 +15,12 @@ const CommentSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    fileUrl: { // 🔥 Yüklenen dosyanın URL’si
+        type: String
+    },
+    fileName: { // 🔥 Dosya adı
+        type: String
+    },
     createdAt:{
         type: Date,
         default: Date.now
