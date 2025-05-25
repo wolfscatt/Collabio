@@ -1,4 +1,3 @@
-import { useState } from 'react';
 
 export type DayType = 'holiday' | 'religious' | 'special' | null;
 
@@ -30,7 +29,7 @@ const useCalendar = () => {
     '11-24': { name: 'Öğretmenler Günü', type: 'special' },
   };
 
-  const getHoliday = (day: number, month: number, year: number) => {
+  const getHoliday = (day: number, month: number) => {
     const key = `${month + 1}-${day}`;
     return holidays[key] || null;
   };
@@ -60,7 +59,7 @@ const useCalendar = () => {
         date.getDate() === today.getDate() &&
         date.getMonth() === today.getMonth() &&
         date.getFullYear() === today.getFullYear();
-      const holiday = getHoliday(i, month, year);
+      const holiday = getHoliday(i, month);
 
       days.push({
         date,

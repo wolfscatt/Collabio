@@ -1,8 +1,8 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react';
-import CalendarGrid from '../../../components/ScheduleComps/CalendarGrid';  
-import NoteModal from '../../../components/ScheduleComps/NoteModal';
+import CalendarGrid from '../../../../components/ScheduleComps/CalendarGrid';  
+import NoteModal from '../../../../components/ScheduleComps/NoteModal';
 import { format } from 'date-fns';
 import { tr } from 'date-fns/locale';
 

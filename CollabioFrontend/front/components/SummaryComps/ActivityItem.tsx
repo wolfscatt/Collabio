@@ -7,7 +7,7 @@ export interface ActivityItemProps {
     status: 'TAMAM' | 'DEVAM' | 'YAPILACAKLAR';
     taskTitle: string;
     description: string;
-    timeAgo: number;
+    timeAgo: string;
 }
 
 const statusColorMap: Record<ActivityItemProps['status'], string> = {
@@ -31,6 +31,8 @@ const ActivityItem: React.FC<ActivityItemProps> = ({
                     src={avatarUrl}
                     alt={name}
                     className="w-[2.5vw] h-[2.5vw] rounded-full"
+                    width={100}
+                    height={100}
                 />
             </div>
 
@@ -53,11 +55,11 @@ const ActivityItem: React.FC<ActivityItemProps> = ({
                 </div>
 
                 <div className="text-[0.85rem] text-[var(--color-dark)] mb-[0.4vh]">
-                    konusunda "{description}" alanını güncellendi
+                    {description}
                 </div>
 
                 <div className="text-[0.75rem] flex flex-row items-center text-[var(--color-light)]">
-                    <FaClock className='text-[2vh] mr-[0.5vh]' /> {timeAgo} gün önce
+                    <FaClock className='text-[2vh] mr-[0.5vh]' /> {timeAgo}
                 </div>
             </div>
         </div>

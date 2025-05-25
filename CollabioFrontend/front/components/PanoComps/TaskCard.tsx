@@ -2,7 +2,7 @@ import React from 'react';
 import { Draggable } from '@hello-pangea/dnd';
 
 interface TaskCardProps {
-  task: { id: string; title: string; author: string; date: string; code: string };
+  task: { id: string; title: string; author: string; date: string;};
   index: number;
 }
 
@@ -16,10 +16,9 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, index }) => (
         {...provided.dragHandleProps}
       >
         <h3 className="font-semibold">{task.title}</h3>
-        <div className="flex justify-between mt-2 text-sm">
-          <span className="text-purple-600">{task.code}</span>
-          <span>{task.author}</span>
-          <span className="text-gray-500">{task.date}</span>
+        <div className="flex justify-between  mt-2 text-sm">
+          <span className="text-[1.7vh] line-clamp-1">{task.author}</span>
+          <span className="text-gray-500 text-[1.7vh]">{task.date}</span>
         </div>
       </div>
     )}

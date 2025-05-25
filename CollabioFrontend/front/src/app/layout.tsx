@@ -1,39 +1,28 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Sidebar from "../../components/SideBarComps/SideBar";
-import TopBar from "../../components/TopBarComps/TopBar";
+import { ReactNode } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
+
 
 export const metadata: Metadata = {
   title: "Collabio",
   description: "Collabio Website",
+  icons: {
+    icon: "/favicon.ico",
+  }
 };
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
-    <html lang="tr">
-      <body className="flex h-screen">
-        {/* Sidebar */}
-        <aside className="w-64 bg-white border-r">
-          <Sidebar />
-        </aside>
-
-        {/* Main Area */}
-        <div className="flex flex-col flex-1">
-          {/* Top Navbar */}
-          <TopBar />
-
-          {/* Page Content */}
-          <main className="overflow-auto bg-gray-100 flex-1">
+    <html lang="tr" className={inter.className}>
+      <body>
             {children}
-          </main>
-        </div>
       </body>
     </html>
   );

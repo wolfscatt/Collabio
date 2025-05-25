@@ -24,6 +24,8 @@ const TaskDistribution: React.FC<TaskDistributionProps> = ({ name, avatarUrl, ta
                     src={avatarUrl}
                     className="w-10 h-10 rounded-full border-2 border-white shadow"
                     alt={name}
+                    width={100}
+                    height={100}
                 />
                 <span className="text-sm text-[var(--color-dark)]">{name}</span>
             </div>
@@ -46,7 +48,7 @@ const TaskDistribution: React.FC<TaskDistributionProps> = ({ name, avatarUrl, ta
                         );
                     })}
                 </div>
-                <div className="text-xs text-[var(--color-light)] flex gap-3">
+                <div className="text-xs text-[var(--color-light)] justify-between flex gap-3">
                     {tasks.map((task, index) => (
                         <span key={index}>
                             {task.count} {task.label}

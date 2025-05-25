@@ -25,15 +25,18 @@ const OncomingTaskRow: React.FC<OncomingTaskRowProps> = ({
       </div>
       <div className="mr-3">
         <span className="inline-block px-4 py-1 rounded-full text-xs font-semibold bg-[#e3f2fd] text-[#1976d2] shadow-sm">
-          {status}
+          {status.toUpperCase()}
         </span>
       </div>
-      <div>
+      <div className="flex items-center gap-2">
+        {name}
         <img
           src={avatarUrl}
           className="w-9 h-9 rounded-full border-2 border-white shadow"
           alt={name}
           title={name}
+          width={100}
+          height={100}
         />
       </div>
     </div>
