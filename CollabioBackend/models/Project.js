@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const STATUSES = require("../enums/projectStatusEnum")
 
 const ProjectSchema = new mongoose.Schema({
   name: {
@@ -6,7 +7,9 @@ const ProjectSchema = new mongoose.Schema({
     required: true
   },
   description: {
-    type: String
+    type: String,
+    required: true,
+    default: ''
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
@@ -19,8 +22,18 @@ const ProjectSchema = new mongoose.Schema({
   }],
   status: {
     type: String,
-    enum: ['active', 'completed', 'archived'],
-    default: 'active'
+    enum: [STATUSES.ACTIVE, STATUSES.COMPLETE, STATUSES.CANCELED],
+    default: STATUSES.ACTIVE
+  },
+  startDate:{
+    type: Date
+  },
+  endDate:{
+    type: Date
+  },
+  teamId:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Team',
   }
 }, {
   timestamps: true
