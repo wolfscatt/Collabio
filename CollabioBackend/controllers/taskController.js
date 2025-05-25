@@ -43,7 +43,13 @@ exports.remove = async (req, res, next) => {
 // Görev onaylama kontrolcüsü
 exports.approve = async (req, res, next) => {
   try {
-    const task = await taskService.approveTask({taskId:req.params.id}, req.user);
+    const { status } = req.body; // 🔥 Frontend body’de { status: 'approved' } veya 'rejected' gönderecek
+
+    const task = await taskService.approveTask({
+      taskId: req.params.id,
+      newStatus: status // 🔥 Servise ilet
+    }, req.user);
+
     res.json(task);
   } catch (err) {
     next(err);

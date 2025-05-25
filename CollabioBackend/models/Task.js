@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const STATUSES = require('../enums/taskStatusEnum');
 const PRIORITIES = require('../enums/priorityEnum');
+const APPROVAL_STATUSES = require('../enums/approvedEnum');
 
 const TaskSchema = new mongoose.Schema({
   title: {
@@ -32,9 +33,10 @@ const TaskSchema = new mongoose.Schema({
   approvedAt:{
     type: Date
   },
-  isApproved:{
-    type: Boolean,
-    default: false
+  approvalStatus:{
+    type: String,
+    enum: [APPROVAL_STATUSES.REJECT, APPROVAL_STATUSES.PENDING, APPROVAL_STATUSES.APPROVED],
+    default: APPROVAL_STATUSES.PENDING
   },
   projectId: {
     type: mongoose.Schema.Types.ObjectId,

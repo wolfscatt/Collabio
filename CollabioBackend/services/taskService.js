@@ -1,6 +1,7 @@
 const taskRepo = require('../repositories/taskRepository');
 const Role = require('../models/Role');
 const ACTIONTYPES = require('../enums/actionTypeEnum');
+const APPROVAL_STATUSES = require('../enums/approvalStatusEnum');
 const withLogging = require('../utils/withLogging');
 
 // Task oluşturma servisi - reporter ise görevi oluşturan kişidir.
@@ -73,16 +74,23 @@ const deleteTask = withLogging(ACTIONTYPES.DELETE_TASK, _deleteTask);
 
 // Görev onaylama servisi
 // Proje yöneticisi tarafından onaylanacak görevleri onaylama
-const _approveTask = async ({taskId}, user) => {
+const _approveTask = async ({ taskId, newStatus }, user) => {
   if (user.role?.name !== 'project_manager') {
     const err = new Error('Sadece proje yöneticisi onay verebilir.');
     err.status = 403;
     throw err;
   }
 
+  // newStatus: 'approved', 'rejected' veya 'pending'
+  if (!Object.values(APPROVAL_STATUSES).includes(newStatus)) {
+    const err = new Error('Geçersiz onay durumu.');
+    err.status = 400;
+    throw err;
+  }
+
   const task = await taskRepo.update(taskId, {
-    isApproved: true,
-    approvedAt: new Date()
+    approvalStatus: newStatus,
+    approvedAt: newStatus === APPROVAL_STATUSES.APPROVED ? new Date() : null
   });
 
   return task;
