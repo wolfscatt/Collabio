@@ -1,7 +1,9 @@
 # 📦 Collabio Backend API – README
 
 ## 🌐 Base URL
-```http://localhost:5000/api```
+```http
+http://localhost:5000/api
+```
 
 ---
 
@@ -19,6 +21,7 @@ POST /auth/register
   "password": "123456"
 }
 ```
+
 ### 🔹 Giriş Yapma
 ```bash
 POST /auth/login
@@ -30,13 +33,37 @@ POST /auth/login
   "password": "123456"
 }
 ```
-🔐 Giriş başarılı olduğunda JWT token döner. Diğer endpoint’lerde ``Authorization: Bearer <token>`` header'ı ile kullanılmalıdır.
+🔐 Giriş başarılı olduğunda JWT token döner. Diğer endpoint’lerde:
+```makefile
+Authorization: Bearer <token>
+```
+header'ı ile kullanılmalıdır.
+
+### 🔹 Geçerli Kullanıcı Bilgisi
+```bash
+GET /users/me
+```
+
+### 🔹 Proje Favorilerine Ekle
+```bash
+POST /users/favorites/:projectId
+```
+
+### 🔹 Proje Favorilerinden Çıkar
+```bash
+DELETE /users/favorites/:projectId
+```
+
+### 🔹 Favori Projeleri Listele
+```bash
+GET /users/favorites
+```
 
 ---
 
 ## 📁 Proje (Project) Endpoints
 
-### 🔹 Projeleri Listele
+### 🔹 Projeleri Listele (owner & members)
 ```bash
 GET /projects
 ```
@@ -54,6 +81,18 @@ POST /projects
   "members": ["<userId1>", "<userId2>"]
 }
 ```
+
+### 🔹 Projeye Üye Ekle (email ile)
+```bash
+POST /projects/:id/members
+```
+**Body:**
+```json
+{
+  "email": "user@example.com"
+}
+```
+
 ### 🔹 Proje Güncelle
 ```bash
 PUT /projects/:id
@@ -63,8 +102,6 @@ PUT /projects/:id
 ```bash
 DELETE /projects/:id
 ```
-
-🔐 Bu işlemleri sadece **project_manager** rolüne sahip kullanıcılar gerçekleştirebilir.
 
 ---
 
@@ -79,8 +116,7 @@ GET /tasks/:projectId
 ```bash
 POST /tasks
 ```
-**Body**
-
+**Body:**
 ```json
 {
   "title": "API Geliştir",
@@ -102,60 +138,67 @@ PUT /tasks/:id
 DELETE /tasks/:id
 ```
 
-### 🔹 Statü Değiştir (drag & drop desteği)
+### 🔹 Statü Değiştir (drag & drop)
 ```bash
 PUT /tasks/:id/status
 ```
-**Body**
+**Body:**
 ```json
 {
   "status": "in_progress"
 }
 ```
 
-### 🔹 Görev Onayla (Yalnızca Project Manager)
+### 🔹 Görev Onay Durumu Güncelle (approved/rejected/pending)
 ```bash
 PUT /tasks/:id/approve
+```
+**Body:**
+```json
+{
+  "status": "approved"
+}
 ```
 
 ---
 
 ## 💬 Yorum (Comment) Endpoints
 
-### 🔹 Yorum Ekle
+### 🔹 Yorum Ekle (isteğe bağlı PDF eklenebilir)
 ```bash
 POST /comments/:taskId
 ```
-**Body**
-```json
-{
-  "content": "Bu işi ben alıyorum."
-}
-```
+**FormData:**
+- `content`: Yorum metni (zorunlu)
+- `file`: PDF dosyası (isteğe bağlı)
 
 ### 🔹 Yorumları Listele
 ```bash
 GET /comments/:taskId
 ```
 
-### 🔹 Yorumu Güncelle
+### 🔹 Yorumu Güncelle (isteğe bağlı yeni PDF dosyası)
 ```bash
 PUT /comments/:id
 ```
+**FormData:**
+- `content`: Güncellenmiş yorum metni
+- `file`: Yeni PDF dosyası (isteğe bağlı)
 
 ### 🔹 Yorumu Sil
 ```bash
 DELETE /comments/:id
 ```
+
 ---
 
 ## 📎 Dosya (Attachment) Endpoints
 
-### 🔹 Dosya Ekle
+### 🔹 Göreve Dosya Ekle
 ```bash
 POST /attachments
 ```
-**Body**
+**Body:**
 ```json
 {
   "fileUrl": "https://cdn.com/file.pdf",
@@ -164,7 +207,7 @@ POST /attachments
 }
 ```
 
-### 🔹 Görev Dosyalarını Listele
+### 🔹 Göreve Ait Dosyaları Listele
 ```bash
 GET /attachments/:taskId
 ```
@@ -173,24 +216,26 @@ GET /attachments/:taskId
 ```bash
 DELETE /attachments/:id
 ```
+
 ---
 
 ## 📜 Log (Geçmiş) Endpoints
 
-### 🔹 Görev Geçmişini Görüntüle
+### 🔹 Tüm Logları Listele (filtre destekli)
+```bash
+GET /logs
+```
+**Query Parametreleri (opsiyonel):**
+- `startDate`: Başlangıç tarihi (ISO)
+- `endDate`: Bitiş tarihi (ISO)
+- `actionType`: Eylem tipi (ör. CREATE_TASK, DELETE_TASK)
+- `taskStatus`: İlgili task durumu (ör. TODO, INPROGRESS)
+
+### 🔹 Belirli Görevin Logları
 ```bash
 GET /logs/:taskId
 ```
-**Örnek Dönen Veri:**
-```json
-[
-  {
-    "actionType": "create_task",
-    "authorUserId": { "username": "ömer" },
-    "timeStamp": "2025-05-03T13:00:00Z"
-  }
-]
-```
+
 ---
 
 ## 🔐 Authorization
