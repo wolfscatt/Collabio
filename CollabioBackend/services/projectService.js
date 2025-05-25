@@ -1,4 +1,5 @@
 const projectRepo = require('../repositories/projectRepository');
+const userRepo = require('../repositories/userRepository');
 
 const createProject = async (data, ownerId) => {
     const project = await projectRepo.create({ ...data, owner: ownerId });
@@ -43,9 +44,38 @@ const deleteProject = async (id, userId) => {
   return await projectRepo.remove(id);
 };
 
+const addMemberToProject = async (projectId, email, currentUser) => {
+  const project = await projectRepo.getById(projectId);
+  if (!project) {
+    const err = new Error('Proje bulunamadı.');
+    err.status = 404;
+    throw err;
+  }
+
+  const isOwner = String(project.owner._id) === String(currentUser._id);
+  const isProjectManager = currentUser.role?.name === 'project_manager';
+  
+  if (!isOwner && !isProjectManager) {
+    const err = new Error('Sadece proje sahibi veya project manager üye ekleyebilir.');
+    err.status = 403;
+    throw err;
+  }
+
+  // 🔥 User modeline dokunmadan userRepo'yu kullanıyoruz
+  const user = await userRepo.findByEmail(email);
+  if (!user) {
+    const err = new Error('Kullanıcı bulunamadı.');
+    err.status = 404;
+    throw err;
+  }
+
+  return await projectRepo.addMember(projectId, user._id);
+};
+
 module.exports = {
   createProject,
   getProjectsByUser,
   updateProject,
-  deleteProject
+  deleteProject,
+  addMemberToProject
 };

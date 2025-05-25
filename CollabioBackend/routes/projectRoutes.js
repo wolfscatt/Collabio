@@ -19,4 +19,8 @@ router.put('/:id', auth, checkPermission(PERMISSIONS.UPDATE), validate(updatePro
 // DELETE: Projeyi sil
 router.delete('/:id', auth, checkPermission(PERMISSIONS.DELETE), controller.remove);
 
+// POST: Projeye üye ekle
+router.post('/:id/members', auth, controller.addMember);
+
+
 module.exports = router;

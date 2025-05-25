@@ -35,3 +35,14 @@ exports.remove = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.addMember = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const project = await projectService.addMemberToProject(req.params.id, email, req.user);
+    res.json(project);
+  } catch (err) {
+    next(err);
+  }
+};
+
