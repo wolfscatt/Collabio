@@ -26,9 +26,9 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
             console.log("Modal açıkken proje verisi:", selectedProject);
         }
     }, [open, selectedProject]);
-    
+
     if (!open) return null;
-    
+
     const TaskTags = [
         "Backend",
         "Frontend",
@@ -72,6 +72,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
             console.error("Görev oluşturulamadı:", err);
         }
     };
+    const hasAssignees = !!selectedProject?.members?.length;
     return (
         <div className="fixed z-[1000] left-0 top-0 w-full h-full bg-black bg-opacity-50 animate-fadeIn">
             <div className="bg-white mt-[5%] mx-auto rounded-lg w-[80%] max-w-[800px] shadow-lg animate-slideDown max-h-[80vh] flex flex-col overflow-hidden">
@@ -179,8 +180,13 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
                             >
                                 İptal
                             </button>
-                            <button type="submit" className="px-4 py-2 bg-[var(--color-primary)] text-white rounded hover:opacity-90">
-                                Ekle
+                            <button
+                                type="submit"
+                                disabled={!hasAssignees}
+                                className={`px-4 py-2 rounded transition ${hasAssignees
+                                    ? "bg-[var(--color-primary)] text-white hover:opacity-90"
+                                    : "bg-gray-300 text-gray-500 cursor-not-allowed"}`}
+                            >Ekle
                             </button>
                         </div>
                     </form>

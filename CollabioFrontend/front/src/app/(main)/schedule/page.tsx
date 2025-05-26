@@ -1,13 +1,20 @@
-'use client'
+"use client";
 
-import React, { useState, useRef, useEffect } from 'react';
-import CalendarGrid from '../../../../components/ScheduleComps/CalendarGrid';  
-import NoteModal from '../../../../components/ScheduleComps/NoteModal';
-import { format } from 'date-fns';
-import { tr } from 'date-fns/locale';
+import React, { useState, useRef, useEffect } from "react";
+import CalendarGrid, {
+  TaskEntry,
+} from "../../../../components/ScheduleComps/CalendarGrid";
+import NoteModal from "../../../../components/ScheduleComps/NoteModal";
+import { format } from "date-fns";
+import { tr } from "date-fns/locale";
+import { useProjectTasks } from "@/hooks/useProjectTasks";
+import { useSelectedProject } from "@/context/SelectedProjectContext";
 
 const SchedulePage = () => {
   const today = new Date();
+  const { selectedProject } = useSelectedProject();
+  const { tasks, loading } = useProjectTasks(!!selectedProject?._id);
+
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -19,22 +26,29 @@ const SchedulePage = () => {
   const monthRef = useRef<HTMLDivElement>(null);
   const yearRef = useRef<HTMLDivElement>(null);
 
+
+  const calendarTasks: TaskEntry[] = Array.isArray(tasks) ? tasks.map((t) => ({
+    date: (t.startDate || t.createdAt).split("T")[0],
+    status: t.status as TaskEntry["status"],
+    title: t.title,
+    assigneeName: t.assignee?.username || "Atanmamış",  // atanan kullanıcı adı
+  })) : [];
+
   const handleDayClick = (date: Date) => {
-    const key = date.toISOString().split('T')[0];
-    setSelectedDate(key);
+    setSelectedDate(date.toISOString().split("T")[0]);
     setModalOpen(true);
   };
 
   const handleSaveNote = (note: string) => {
-    if (selectedDate) {
-      setNotes({ ...notes, [selectedDate]: note });
-    }
+    if (selectedDate) setNotes({ ...notes, [selectedDate]: note });
     setModalOpen(false);
   };
 
-  const formattedTitle = format(new Date(currentYear, currentMonth), 'MMMM yyyy', {
-    locale: tr,
-  });
+  const formattedTitle = format(
+    new Date(currentYear, currentMonth),
+    "MMMM yyyy",
+    { locale: tr }
+  );
 
   const handleClickOutside = (e: MouseEvent) => {
     if (monthRef.current && !monthRef.current.contains(e.target as Node)) {
@@ -46,17 +60,14 @@ const SchedulePage = () => {
   };
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const goToToday = () => {
     setCurrentMonth(today.getMonth());
     setCurrentYear(today.getFullYear());
   };
-
   return (
     <div className="w-[83vw] min-w-[80vw] bg-white ml-[1vh] mt-[1vh] rounded-xl shadow">
       <div className="flex flex-row items-center justify-between px-[2vh] py-[2vh] border-b border-gray-200">
@@ -132,6 +143,7 @@ const SchedulePage = () => {
           currentYear={currentYear}
           onDayClick={handleDayClick}
           notes={notes}
+          tasks={calendarTasks}
         />
       </div>
 
