@@ -21,13 +21,16 @@ const getPriorityColor = (priority: Task["priority"]) => {
 };
 
 export const TaskCard = ({ task, onApprove, onReject }: TaskCardProps) => {
+  
   const priorityColor = getPriorityColor(task.priority);
   const assigneeInitials = task.assignee?.username
     .split(" ")
     .map((word) => word[0]?.toUpperCase())
     .join("");
 
-  const isPending = task.status === "pending";
+  const isPending = task.isApproved === false;
+  const isApproved = task.isApproved === true;
+  const isRejected = task.isApproved === false;
 
   return (
     <div className="w-full border rounded-xl shadow-sm overflow-hidden bg-white my-3">
@@ -36,7 +39,6 @@ export const TaskCard = ({ task, onApprove, onReject }: TaskCardProps) => {
 
           {/* Code + Priority */}
           <div className="flex justify-between items-center">
-            <span className="font-semibold text-sm text-gray-700">{task._id}</span>
 
             <span
               className={`text-xs font-semibold px-2 py-1 rounded ${isPending
@@ -67,7 +69,7 @@ export const TaskCard = ({ task, onApprove, onReject }: TaskCardProps) => {
               Beklemede
             </div>
           )}
-          {task.status === "approved" && (
+          {isApproved && (
             <div className="bg-green-500 text-white text-xs font-semibold text-center px-6 py-1 rounded-md w-full max-w-[300px] mx-auto">
               Onaylandı
             </div>

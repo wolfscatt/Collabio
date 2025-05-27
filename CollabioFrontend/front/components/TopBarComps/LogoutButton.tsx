@@ -14,9 +14,12 @@ export default function LogoutButton() {
 
   return (
     <button
+      data-testid="logout-button"
+      id="logout-button"
       onClick={handleLogout}
+      className="cursor-pointer hover:text-gray-900 text-white transition-colors"
     >
-      <TbLogout2 className="text-[4vh] cursor-pointer hover:text-[var(--color-primary)] text-[var(--color-medium)] transition-colors" />
+      <TbLogout2 className="text-[4vh] " />
     </button>
   );
 }

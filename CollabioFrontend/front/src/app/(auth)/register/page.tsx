@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import RegInput from "../../../../components/RegInput";
+import api from "@/lib/api";
 
 export default function RegisterPage() {
   const [username, setUsername] = useState("");
@@ -15,6 +16,12 @@ export default function RegisterPage() {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!username.trim() || !email.trim()) {
+      setMessage("Lütfen tüm alanları doldurun.");
+      setMessageType("error");
+      return;
+    }
 
     if (password !== confirmPassword) {
       setMessage("Şifreler eşleşmiyor!");
@@ -29,26 +36,31 @@ export default function RegisterPage() {
     }
 
     try {
-      // const res = await api.post("/auth/register", {
-      //   username,
-      //   email,
-      //   password,
-      // });
+      const res = await api.post("/auth/register", {
+        username,
+        email,
+        password,
+      });
+
+      // Eğer backend beklenen token ya da user objesini dönmediyse hata göster
+      if (!res.data || !res.data.token) {
+        setMessage("Kayıt başarısız: geçerli bir yanıt alınamadı.");
+        setMessageType("error");
+        return;
+      }
 
       setMessage("Kayıt başarılı! Giriş sayfasına yönlendiriliyorsunuz...");
       setMessageType("success");
-
+      localStorage.setItem("token", res.data.token);
       setTimeout(() => {
         router.push("/login");
       }, 1500);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       const errorMsg = err.response?.data?.message || "Kayıt başarısız!";
       setMessage(errorMsg);
       setMessageType("error");
     }
   };
-
 
   return (
     <div className="min-h-screen w-full bg-register bg-fixed bg-cover bg-no-repeat flex flex-col items-center justify-center">
@@ -106,14 +118,22 @@ export default function RegisterPage() {
           </button>
         </form>
         {message && (
-          <p className={`text-sm text-center font-medium ${messageType === "success" ? "text-green-600" : "text-red-600"}`}>
+          <p
+            className={`text-sm text-center font-medium ${
+              messageType === "success"
+                ? "text-green-600"
+                : "text-red-600"
+            }`}
+          >
             {message}
           </p>
         )}
-
         <div className="text-center text-sm text-black">
           Zaten hesabınız var mı?{" "}
-          <a href="/login" className="text-purple-800 font-semibold hover:underline">
+          <a
+            href="/login"
+            className="text-purple-800 font-semibold hover:underline"
+          >
             Giriş Yap
           </a>
         </div>

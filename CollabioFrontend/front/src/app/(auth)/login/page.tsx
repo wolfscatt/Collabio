@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
 import { TbLogout } from 'react-icons/tb';
+import { FaSpinner } from 'react-icons/fa';
+import { FaExclamationCircle } from 'react-icons/fa';
 
 const Page = () => {
   const [email, setEmail] = useState("");
@@ -22,7 +24,12 @@ const Page = () => {
         email,
         password,
       });
-
+      localStorage.setItem("user", JSON.stringify({
+        id: res.data.id,
+        email: res.data.email,
+        username: res.data.username,
+        token: res.data.token
+      }));
       localStorage.setItem("token", res.data.token);
       setMessage("Giriş başarılı! Yönlendiriliyorsunuz...");
       setMessageType("success");
@@ -81,7 +88,9 @@ const Page = () => {
 
         {/* ✅ Durum Mesajı */}
         {message && (
-          <p className={`text-sm text-center font-medium mb-2 ${messageType === "success" ? "text-green-600" : "text-red-600"}`}>
+          <p className={`text-[1.6vh] flex items-center gap-2 justify-center text-center font-medium mb-2 ${messageType === "success" ? "text-green-600" : "text-red-600"}`}>
+            {messageType === "success" ? <FaSpinner className="text-green-600 text-[1.6vh] animate-spin" />
+              : <FaExclamationCircle className="text-red-600 text-[1.6vh]" />}
             {message}
           </p>
         )}

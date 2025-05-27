@@ -1,5 +1,5 @@
 "use client"
-import React from "react";
+import React, { useEffect, useState } from "react";
 import TopBarButton from "./TopBarButton";
 import {
   FaChartBar,
@@ -16,11 +16,31 @@ import { useSelectedProject } from "@/context/SelectedProjectContext";
 
 const TopBar = () => {
   const { selectedProject } = useSelectedProject();
+  const [username, setUsername] = useState<string>("");
+
+  useEffect(() => {
+    const stored = localStorage.getItem("user");
+    if (stored) {
+      try {
+        const user = JSON.parse(stored);
+        if (user.username) {
+          setUsername(user.username);
+        }
+      } catch {
+        // parse hatası olursa yoksay
+      }
+    }
+  }, []);
   return (
     <header>
-      <div className="p-4 h-[10vh] flex justify-between border-l border-[var(--color-medium)] items-center box-border">
-        <h1 className="text-[4vh] font-semibold">{selectedProject?.name}</h1>
+      <div className="p-4 h-[10vh] bg-gradient-to-r from-[var(--color-dark)] to-[var(--color-light)] border-b-2 border-gray-300 flex justify-between border-l border-[var(--color-medium)] items-center box-border">
+        <div className="flex rounded-md  text-gray-200 p-2 px-4 items-center gap-4">
+          <h1 className="text-[3vh] font-semibold">{selectedProject?.name}</h1>
+        </div>
         <div className="flex items-center gap-4">
+          <div className="text-[2.5vh] font-medium text-gray-900 bg-[var(--color-medium)] rounded-full px-4 py-2">
+            {username.toUpperCase() || "Misafir"}
+          </div>
           <LogoutButton />
         </div>
       </div>
@@ -33,7 +53,6 @@ const TopBar = () => {
           <TopBarButton href="/schedule" title="Takvim" icon={AiFillSchedule} />
           <TopBarButton href="/timeline" title="Zaman Çizelgesi" icon={FaChartBar} />
           <TopBarButton href="/confirmations" title="Onaylar" icon={FaCircleCheck} />
-          <TopBarButton href="/forms" title="Formlar" icon={FaFileAlt} />
           <TopBarButton href="/files" title="Ekler" icon={FaPaperclip} />
         </div>
       </nav>
