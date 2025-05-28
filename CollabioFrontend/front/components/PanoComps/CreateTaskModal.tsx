@@ -49,7 +49,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
         const priority = formData.get("priority") as string;
         const assignee = formData.get("assignee") as string;
         const tag = formData.get("tag") as string;
-
+        const dueDate = formData.get("dueDate") as string;
         if (!selectedProject?._id) return;
 
         try {
@@ -61,6 +61,8 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
                 tags: [tag],
                 projectId: selectedProject._id,
                 status: "to-do",
+                startDate: new Date().toISOString(),
+                endDate: new Date(dueDate).toISOString(),
             });
 
             console.log("Görev başarıyla oluşturuldu:", res.data);
@@ -150,26 +152,39 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
                                 </select>
                             </div>
                         </div>
-
-                        <div className="mb-6">
-                            <label htmlFor="task-assignee" className="block font-medium mb-1">
-                                Sorumlu
-                            </label>
-                            {selectedProject?.members?.length ? (
-                                <select
-                                    id="task-assignee"
-                                    name="assignee"
-                                    className="w-full border border-gray-300 px-3 py-2 rounded"
-                                >
-                                    {selectedProject.members.map((member: User) => (
-                                        <option key={member._id} value={member._id}>
-                                            {member.username}
-                                        </option>
-                                    ))}
-                                </select>
-                            ) : (
-                                <p className="text-sm text-gray-500">Projeye ait kullanıcı bulunamadı.</p>
-                            )}
+                        <div className="mb-4 flex flex-row gap-2">
+                            <div className="mb-4 w-full">
+                                <label htmlFor="task-due-date" className="block font-medium mb-1">
+                                    Teslim Tarihi
+                                </label>
+                                <input
+                                    type="date"
+                                    id="task-due-date"
+                                    name="dueDate"
+                                    className="w-full border border-gray-300 px-3 py-1 rounded"
+                                    required
+                                />
+                            </div>
+                            <div className="mb-4 w-full">
+                                <label htmlFor="task-assignee" className="block font-medium mb-1">
+                                    Sorumlu
+                                </label>
+                                {selectedProject?.members?.length ? (
+                                    <select
+                                        id="task-assignee"
+                                        name="assignee"
+                                        className="w-full border border-gray-300 px-3 py-2 rounded"
+                                    >
+                                        {selectedProject.members.map((member: User) => (
+                                            <option key={member._id} value={member._id}>
+                                                {member.username}
+                                            </option>
+                                        ))}
+                                    </select>
+                                ) : (
+                                    <p className="text-sm text-gray-500">Projeye ait kullanıcı bulunamadı.</p>
+                                )}
+                            </div>
                         </div>
 
                         <div className="flex justify-end gap-2">

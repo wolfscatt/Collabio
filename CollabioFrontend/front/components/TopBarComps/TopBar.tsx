@@ -4,7 +4,6 @@ import TopBarButton from "./TopBarButton";
 import {
   FaChartBar,
   FaChartPie,
-  FaFileAlt,
   FaList,
   FaPaperclip,
 } from "react-icons/fa";
@@ -32,8 +31,8 @@ const TopBar = () => {
     }
   }, []);
   return (
-    <header>
-      <div className="p-4 h-[10vh] bg-gradient-to-r from-[var(--color-dark)] to-[var(--color-light)] border-b-2 border-gray-300 flex justify-between border-l border-[var(--color-medium)] items-center box-border">
+    <header className="bg-gradient-to-b from-[var(--color-dark)] to-[var(--color-light)] rounded-b-[16px]">
+      <div className="p-4 h-[10vh]   flex justify-between border-l border-[var(--color-medium)] items-center box-border">
         <div className="flex rounded-md  text-gray-200 p-2 px-4 items-center gap-4">
           <h1 className="text-[3vh] font-semibold">{selectedProject?.name}</h1>
         </div>
@@ -45,7 +44,7 @@ const TopBar = () => {
         </div>
       </div>
 
-      <nav className="px-6 py-2 justify-between items-center bg-gradient-to-r from-[#8972e7] to-[#a18af7] shadow-md rounded-b-[16px] min-h-[56px] h-[56px] w-full relative z-10 box-border">
+      <nav className="px-6 py-2 justify-between items-center  shadow-md rounded-b-[16px] min-h-[56px] h-[56px] w-full relative z-10 box-border">
         <div className="nav-left flex flex-row ">
           <TopBarButton href="/summary" title="Özet" icon={FaChartPie} />
           <TopBarButton href="/pano" title="Pano" icon={TiThLargeOutline} />

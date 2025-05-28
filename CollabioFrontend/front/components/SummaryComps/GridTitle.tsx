@@ -9,8 +9,8 @@ interface GridTitleProps {
 
 const GridTitle: React.FC<GridTitleProps> = ({ text, title, isShowAll }) => {
   return (
-    <div className="p-[3vh] border-b border-[#f0f0f0]">
-      <h3 className="text-[var(--color-dark)] text-[2.5vh] flex justify-between font-semibold">
+    <div className="border-b border-[#f0f0f0]">
+      <h3 className="text-[var(--color-dark)] w-[30vw] text-[2.5vh] flex justify-between items-center font-semibold">
         {title}
         {isShowAll ? (
           <a

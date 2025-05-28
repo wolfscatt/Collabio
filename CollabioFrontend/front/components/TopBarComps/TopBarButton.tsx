@@ -22,7 +22,7 @@ const TopBarButton: React.FC<TopBarButtonProps> = ({
     <Link
       href={href}
       className={`text-white mr-[1vh] px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap flex items-center gap-[6px] h-[36px] transition-colors duration-200
-        hover:text-[#8972e7] hover:bg-white
+        hover:text-[var(--color-dark)] hover:bg-[var(--color-light)]
         ${isActive ? 'bg-white/20 text-white' : ''}`}
     >
       <IconType />

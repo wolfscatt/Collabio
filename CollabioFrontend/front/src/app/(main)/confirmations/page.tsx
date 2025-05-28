@@ -1,66 +1,142 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 import { TaskList } from "../../../../components/TaskComps/TaskList";
-import type { Task } from "@/types/task";
-import api from "@/lib/api";
 import { useProjectTasks } from "@/hooks/useProjectTasks";
 import { useSelectedProject } from "@/context/SelectedProjectContext";
-import { useRouter } from "next/navigation";
+import api from "@/lib/api";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function TasksPage() {
   const { selectedProject } = useSelectedProject();
-  const { tasks } = useProjectTasks(!!selectedProject?._id);
-  const router = useRouter();
-  // 2) Filtreler
-  const pendingTasks = tasks.filter((t) => !t.isApproved);
-  const approvedTasks = tasks.filter((t) => t.isApproved);
+  const { tasks: fetchedTasks } = useProjectTasks(!!selectedProject?._id);
+
+  // 1) useProjectTasks'den gelen görevleri yerel state olarak tut
+  const [tasks, setTasks] = useState(fetchedTasks);
+
+  // Fetched değiştikçe güncelle
+  useEffect(() => {
+    setTasks(fetchedTasks);
+  }, [fetchedTasks]);
+
+  // Sadece kendi görevlerim
+  const [myId, setMyId] = useState("");
+  useEffect(() => {
+    const stored = localStorage.getItem("user");
+    if (stored) {
+      const u = JSON.parse(stored);
+      setMyId(u.id);
+    }
+  }, []);
+
+  const myTasks = tasks.filter((t) => t.assignee?._id === myId);
+  const pendingTasks = myTasks.filter((t) => t.approvalStatus === "pending");
+  const approvedTasks = myTasks.filter((t) => t.approvalStatus === "approved");
+  const rejectedTasks = myTasks.filter((t) => t.approvalStatus === "reject");
 
   const handleApprove = async (taskId: string) => {
-    if (!selectedProject?._id) return;
-
     try {
-      // Düzgün rota burası:
-      await api.patch("/tasks", {
-        projectId: selectedProject._id,
-        taskId,
-        isApproved: true,
-      });
+      const token = localStorage.getItem("token");
+      await api.put(
+        `/tasks/${taskId}/approve`,
+        { status: "approved" },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
-      // verileri yeniden çek
-      router.refresh();
+      setTasks((prev) =>
+        prev.map((t) =>
+          t._id === taskId ? { ...t, approvalStatus: "approved" } : t
+        )
+      );
     } catch (err) {
-      console.error("Onaylama sırasında hata oluştu:", err);
+      console.error(err);
+    }
+  };
+  const handleReject = async (taskId: string) => {
+    try {
+      const token = localStorage.getItem("token");
+      await api.put(
+        `/tasks/${taskId}/approve`,
+        { status: "reject" },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setTasks((prev) =>
+        prev.map((t) =>
+          t._id === taskId ? { ...t, approvalStatus: "reject" } : t
+        )
+      );
+    } catch (err) {
+      console.error(err);
     }
   };
 
-  return (
-    <div className="p-6 space-y-8">
-      {/* Bekleyen Görevler */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-xl font-bold mb-2 relative pb-2">
-          Bekleyen Görevler
-          <hr className="border-t border-gray-300 mt-2" />
-        </h2>
-        <TaskList tasks={pendingTasks} onApprove={handleApprove} />
-      </div>
 
-      {/* Onaylanan Görevler */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-xl font-bold mb-2 relative pb-2">
+  return (
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="p-6 space-y-8"
+    >
+      {/* Bekleyen */}
+      <motion.div
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        className="bg-white rounded-lg shadow p-6"
+      >
+        <motion.h2 
+          initial={{ x: -20, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="text-xl font-bold mb-2"
+        >
+          Bekleyen Görevler
+        </motion.h2>
+        <AnimatePresence>
+          <TaskList tasks={pendingTasks} onApprove={handleApprove} onReject={handleReject} />
+        </AnimatePresence>
+      </motion.div>
+
+      {/* Onaylanan */}
+      <motion.div
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.3 }}
+        className="bg-white rounded-lg shadow p-6"
+      >
+        <motion.h2 
+          initial={{ x: -20, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="text-xl font-bold mb-2"
+        >
           Onaylanan Görevler
-          <hr className="border-t border-gray-300 mt-2" />
-        </h2>
-        <TaskList tasks={approvedTasks} />
-      </div>
-      {/* Reddedilen Görevler */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-xl font-bold mb-2 relative pb-2">
+        </motion.h2>
+        <AnimatePresence>
+          <TaskList tasks={approvedTasks} />
+        </AnimatePresence>
+      </motion.div>
+
+      {/* Reddedilen */}
+      <motion.div
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.4 }}
+        className="bg-white rounded-lg shadow p-6"
+      >
+        <motion.h2 
+          initial={{ x: -20, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="text-xl font-bold mb-2"
+        >
           Reddedilen Görevler
-          <hr className="border-t border-gray-300 mt-2" />
-        </h2>
-        <TaskList tasks={pendingTasks} />
-      </div>
-    </div>
+        </motion.h2>
+        <AnimatePresence>
+          <TaskList tasks={rejectedTasks} />
+        </AnimatePresence>
+      </motion.div>
+    </motion.div>
   );
 }

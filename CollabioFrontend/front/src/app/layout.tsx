@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ReactNode } from "react";
+import { ProjectsProvider } from "@/context/ProjectsContext";
 
 const inter = Inter({ subsets: ["latin"] });
-
 
 export const metadata: Metadata = {
   title: "Collabio",
@@ -22,7 +22,9 @@ export default function RootLayout({
   return (
     <html lang="tr" className={inter.className}>
       <body>
-            {children}
+        <ProjectsProvider>
+          {children}
+        </ProjectsProvider>
       </body>
     </html>
   );

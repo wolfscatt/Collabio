@@ -1,9 +1,7 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
-import { FaFilter, FaUndo } from "react-icons/fa";
-import FilterSelect from "../../../../components/TimelineComps/FilterSelect";
 import ActivityItem from "../../../../components/TimelineComps/ActivityItem";
+import api from "@/lib/api";
 import { useProjectTasks } from "@/hooks/useProjectTasks";
 import { useSelectedProject } from "@/context/SelectedProjectContext";
 import {
@@ -15,64 +13,100 @@ import {
   endOfMonth,
   isAfter,
 } from "date-fns";
+import { ActionType } from "@/types/log";
+import Loading from "../../../../components/Loading";
+import { LogEntry } from "@/hooks/useProjectActivity";
+import { motion, AnimatePresence } from "framer-motion";
 
+
+interface EnrichedLog extends LogEntry {
+  taskTitle: string;
+  taskDescription: string;
+  taskPriority: string;
+  logUpdatedAt: string;
+}
 const Page: React.FC = () => {
   const { selectedProject } = useSelectedProject();
-  const { tasks, loading } = useProjectTasks(!!selectedProject?._id);
+  const { tasks, loading: tasksLoading } = useProjectTasks(
+    !!selectedProject?._id
+  );
 
-  const [filterOpen, setFilterOpen] = useState(false);
-  const [dateFilter, setDateFilter] = useState("all");
-  const [activity, setActivity] = useState("all");
-  const [status, setStatus] = useState("all");
+  const [logs, setLogs] = useState<EnrichedLog[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Görevleri güncelleyerek Date objesine çevir
-  const datedTasks = tasks.map((t) => ({
-    ...t,
-    updatedAtDate: parseISO(t.updatedAt),
+  useEffect(() => {
+    if (tasksLoading || tasks.length === 0) {
+      setLogs([]);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    Promise.all(
+      tasks.map((t) =>
+        api.get<LogEntry[]>(`/logs/${t._id}`).then((res) => {
+          return res.data.map((log) => ({
+            ...log,
+            taskTitle: t.title,
+            taskDescription: t.description,
+            taskPriority: t.priority,
+            logUpdatedAt: log.updatedAt,
+          }));
+        })
+      )
+    )
+      .then((arrays) => {
+        setLogs(arrays.flat());
+      })
+      .catch((err) => console.error("Loglar alınamadı:", err))
+      .finally(() => setLoading(false));
+  }, [tasks, tasksLoading]);
+
+
+  // 3) Zaman damgası Date objesine çevir
+  const datedLogs = logs.map((l) => ({
+    ...l,
+    time: parseISO(l.timeStamp),
   }));
 
+  // 4) Zaman dilimlerine göre gruplandır
   const today = new Date();
   const weekAgo = subDays(today, 7);
   const monthEnd = endOfMonth(today);
 
-  const todayTasks = datedTasks.filter((t) => isToday(t.updatedAtDate));
-  const lastWeekTasks = datedTasks.filter(
-    (t) =>
-      isWithinInterval(t.updatedAtDate, { start: weekAgo, end: today }) &&
-      !isToday(t.updatedAtDate)
+  const todayLogs = datedLogs.filter((l) => isToday(l.time));
+  const lastWeekLogs = datedLogs.filter(
+    (l) => isWithinInterval(l.time, { start: weekAgo, end: today }) && !isToday(l.time)
   );
-  const thisMonthTasks = datedTasks.filter(
-    (t) =>
-      isThisMonth(t.updatedAtDate) &&
-      t.updatedAtDate < weekAgo &&
-      !isToday(t.updatedAtDate)
+  const thisMonthLogs = datedLogs.filter(
+    (l) =>
+      isThisMonth(l.time) &&
+      l.time < weekAgo &&
+      !isToday(l.time)
   );
-  const laterTasks = datedTasks.filter((t) => isAfter(t.updatedAtDate, monthEnd));
+  const laterLogs = datedLogs.filter((l) => isAfter(l.time, monthEnd));
 
-  const renderGroup = (title: string, group: typeof datedTasks) => (
-    <div className="flex flex-col mt-[3vh] gap-[2vw]" key={title}>
-      <div className="w-[80vw] border-b-2 py-[1vh]">
-        <h1 className="text-[2.5vh] text-[var(--color-dark)] font-semibold">
-          {title}
-        </h1>
-      </div>
-      <div className="flex flex-col">
-        {group.map((t) => (
+  const renderGroup = (title: string, group: typeof datedLogs) => (
+    <div className="mt-6" key={title}>
+      <h2 className="text-xl font-semibold mb-2">{title}</h2>
+      <div className="space-y-4">
+        {group.map((l) => (
           <ActivityItem
-            key={t._id}
-            time={t.updatedAtDate.toLocaleTimeString("tr-TR", {
+            key={l._id}
+            time={l.time.toLocaleTimeString("tr-TR", {
               hour: "2-digit",
               minute: "2-digit",
             })}
-            name={t.reporter?.username || ""}
-            initials={t.reporter?.username
-              ?.split(" ")
+            name={l.authorUserId.username}
+            initials={l.authorUserId.username
+              .split(" ")
               .map((n) => n[0])
               .join("")}
-            status={t.status.toUpperCase()}
-            statusType={t.status === "to-do" ? "yapilacaklar" : t.status === "in-progress" ? "devam-ediyor" : t.status === "done" ? "tamam" : "diğer"}
-            course={t.title}
-            message={t.description}
+            actionType={l.actionType as ActionType}
+            taskTitle={l.taskTitle}
+            taskDescription={l.taskDescription}
+            taskPriority={l.taskPriority}
+            logUpdatedAt={l.logUpdatedAt}
             avatarBg="9c27b0"
             avatarColor="fff"
           />
@@ -81,55 +115,90 @@ const Page: React.FC = () => {
     </div>
   );
 
-  return (
-    <div className="w-[83vw] min-w-[80vw] bg-[var(--color-background)] ml-[1vh] mt-[1vh] rounded-xl">
-      <div className="flex flex-col gap-[2vh] mb-[2vh] p-[2vh] bg-white rounded-lg shadow">
-        <div className="flex items-center gap-[2vw]">
-          <button
-            onClick={() => setFilterOpen(!filterOpen)}
-            className="flex items-center gap-[1vh] px-[2vh] py-[1vh] bg-[var(--color-primary)] text-white rounded cursor-pointer text-[1.6vh]"
-          >
-            <FaFilter /> Filtrele
-          </button>
-        </div>
-        {filterOpen && (
-          <div className="flex items-start flex-row gap-[2vh]">
-            {/* FilterSelect’ler */}
-            <div className="flex gap-[2vh] p-[1vh] text-[1.8vh] mt-[2vh]">
-              <button className="flex items-center gap-[0.5vw] px-[2vh] bg-[var(--color-primary)] text-white rounded ">
-                Uygula
-              </button>
-              <button
-                onClick={() => {
-                  setDateFilter("all");
-                  setActivity("all");
-                  setStatus("all");
-                }}
-                className="flex items-center gap-[0.5vw] px-[2vh] py-[0.5vh] bg-white border-[1px] border-black text-black rounded  "
-              >
-                <FaUndo /> Sıfırla
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
+  if (loading) return <Loading />;
 
-      <div className="flex flex-col w-[80vw] ml-[1vw] h-[100vh] overflow-y-auto">
-        <h1 className="text-[3vh] text-[var(--color-dark)] font-bold">
+  return (
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="p-6 bg-white h-full overflow-y-auto"
+    >
+      <motion.div 
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        className="flex justify-between mb-4"
+      >
+        <motion.h1 
+          initial={{ x: -20, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="text-2xl font-bold"
+        >
           Proje Etkinlikleri
-        </h1>
-        {!loading && (
-          <>
-            {todayTasks.length > 0 && renderGroup("Bugün", todayTasks)}
-            {lastWeekTasks.length > 0 &&
-              renderGroup("Geçen Hafta", lastWeekTasks)}
-            {thisMonthTasks.length > 0 &&
-              renderGroup("Bu Ay", thisMonthTasks)}
-            {laterTasks.length > 0 && renderGroup("Sonrası", laterTasks)}
-          </>
-        )}
-      </div>
-    </div>
+        </motion.h1>
+      </motion.div>
+
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={{
+          visible: {
+            transition: {
+              staggerChildren: 0.1
+            }
+          }
+        }}
+      >
+        <AnimatePresence>
+          {todayLogs.length > 0 && (
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 }
+              }}
+              className="mt-6"
+            >
+              {renderGroup("Bugün", todayLogs)}
+            </motion.div>
+          )}
+          {lastWeekLogs.length > 0 && (
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 }
+              }}
+              className="mt-6"
+            >
+              {renderGroup("Geçen Hafta", lastWeekLogs)}
+            </motion.div>
+          )}
+          {thisMonthLogs.length > 0 && (
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 }
+              }}
+              className="mt-6"
+            >
+              {renderGroup("Bu Ay", thisMonthLogs)}
+            </motion.div>
+          )}
+          {laterLogs.length > 0 && (
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 }
+              }}
+              className="mt-6"
+            >
+              {renderGroup("Sonrası", laterLogs)}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    </motion.div>
   );
 };
 
