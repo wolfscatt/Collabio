@@ -2,19 +2,28 @@ const projectRepo = require('../repositories/projectRepository');
 const userRepo = require('../repositories/userRepository');
 
 const createProject = async (data, ownerId) => {
-    const project = await projectRepo.create({ ...data, owner: ownerId });
+    let memberIds = [];
 
-    // owner hariç tüm üyeleri user rolüne çek
     if (data.members && data.members.length > 0) {
-      const userRole = await Role.findOne({ name: 'user' });
-  
-      const updatePromises = data.members
-        .filter(memberId => String(memberId) !== String(ownerId)) // owner hariç
-        .map(memberId => User.findByIdAndUpdate(memberId, { role: userRole._id }));
-  
-      await Promise.all(updatePromises);
+      // Eğer data.members email dizisi ise userId'lere çevir
+      const users = await userRepo.findByEmails(data.members); // Bu metod repoda yazılacak
+      if (users.length !== data.members.length) {
+        const err = new Error("Bazı email adresleri kullanıcılar ile eşleşmedi.");
+        err.status = 400;
+        throw err;
+      }
+      memberIds = users.map(user => user._id);
     }
-  
+
+    // Projeyi oluştur
+    const project = await projectRepo.create({
+      name: data.name,
+      description: data.description,
+      teamId: data.teamId,
+      owner: ownerId,
+      members: memberIds
+    });
+
     return project;
 };
 

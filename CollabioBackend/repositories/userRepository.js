@@ -4,6 +4,10 @@ const findByEmail = async (email) => {
   return await User.findOne({ email });
 };
 
+const findByEmails = async (emails) => {
+  return await User.find({ email: { $in: emails } });
+};
+
 const createUser = async (data) => {
   const user = new User(data);
   return await user.save();
@@ -36,6 +40,7 @@ const getFavorites = async (userId) => {
 
 module.exports = {
   findByEmail,
+  findByEmails,
   createUser,
   getById,
   addFavorite,
