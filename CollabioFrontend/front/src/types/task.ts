@@ -2,12 +2,12 @@ export interface Task {
   _id: string;
   title: string;
   description: string;
-  status: string;
-  priority: "low" | "medium" | "high";
+  status: "to-do" | "in-progress" | "done" | "review";
+  priority: "low" | "medium" | "high" | "critical";
   tags: string[];
   startDate?: string;
   endDate?: string;
-  isApproved: boolean;
+  approvalStatus: "pending" | "approved" | "reject";
   approvedAt?: string;
   projectId: {
     _id: string;

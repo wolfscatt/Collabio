@@ -3,8 +3,10 @@ import React from "react";
 
 const Loading = () => {
   return (
-    <div className="w-full h-screen flex items-center justify-center bg-white">
-      <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin" />
+    <div className="flex-1 mt-[20vh] flex items-center justify-center">
+      <div className="w-[10vw] h-[10vw] rounded-full animate-spin">
+        <img src="/images/collabio-logo-c.png" alt="loading" className="w-full h-full" />
+      </div>
     </div>
   );
 };
