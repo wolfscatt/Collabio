@@ -66,12 +66,22 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
             });
 
             console.log("Görev başarıyla oluşturuldu:", res.data);
-            onClose();
             toast.success("Görev başarıyla eklendi!");
-            onTaskCreated?.();
-            router.refresh(); // Sayfayı yeniden yükle
+            
+            // Önce modalı kapat
+            onClose();
+            
+            // Sonra callback'i çağır ve router.refresh() yap
+            if (onTaskCreated) {
+                onTaskCreated();
+                // Kısa bir gecikme ile router.refresh() çağır
+                setTimeout(() => {
+                    router.refresh();
+                }, 100);
+            }
         } catch (err) {
             console.error("Görev oluşturulamadı:", err);
+            toast.error("Görev oluşturulurken bir hata oluştu!");
         }
     };
     const hasAssignees = !!selectedProject?.members?.length;
