@@ -23,7 +23,6 @@ const TaskColumn: React.FC<TaskColumnProps> = ({ columnId, title, tasks }) => {
                     <h2 className="font-bold text-purple-900">{title}</h2>
                     <span className="ml-2 bg-gray-200 rounded-full px-2 text-sm">{tasks.length}</span>
                 </div>
-                <button className="text-gray-500 text-xl mb-[1vh]">+</button>
             </div>
 
             <Droppable droppableId={columnId}>

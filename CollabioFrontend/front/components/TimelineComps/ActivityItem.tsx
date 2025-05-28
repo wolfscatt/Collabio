@@ -3,7 +3,7 @@ import React from 'react';
 interface ActivityItemProps {
     time: string;
     name: string;
-    initials: string;
+    initials?: string;
     status: string;
     statusType: 'tamam' | 'yapilacaklar' | 'devam-ediyor' | 'diğer';
     course: string;
