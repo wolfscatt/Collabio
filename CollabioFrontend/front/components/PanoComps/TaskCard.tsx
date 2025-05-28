@@ -2,7 +2,7 @@ import React from 'react';
 import { Draggable } from '@hello-pangea/dnd';
 
 interface TaskCardProps {
-  task: { id: string; title: string; author: string; date: string;};
+  task: { id: string; title: string; author: string; date: string; };
   index: number;
 }
 

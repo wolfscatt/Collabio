@@ -34,6 +34,7 @@ const Page = () => {
     }
   };
   const formattedTasks = tasks.map((task) => ({
+    taskId: task._id,
     icon: iconFromCategory(task.tags[0] || ''),
     title: task.title,
     summary: task.description || 'Açıklama girilmemiş.',
@@ -48,14 +49,11 @@ const Page = () => {
 
   return (
     <ProtectedRoute>
-
-
       <div className="w-[83vw] ml-[1vh] mt-[1vh] rounded-xl overflow-hidden shadow-md bg-white">
         <table className="min-w-full text-left text-sm">
           <thead>
             <tr className="bg-purple-100 h-[7vh] text-[1vw] text-purple-900">
-              <th className="px-[1vh] py-[0.5vh]"></th>
-              <th className="px-[1vh] py-[0.5vh]">Tür</th>
+              <th className="px-[2vh] py-[0.5vh]">Tür</th>
               <th className="px-[1vh] py-[0.5vh]">Başlık</th>
               <th className="px-[1vh] py-[0.5vh]">Özet</th>
               <th className="px-[1vh] py-[0.5vh]">Durum</th>

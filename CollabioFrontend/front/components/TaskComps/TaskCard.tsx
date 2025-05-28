@@ -6,7 +6,7 @@ import { FaCheck } from "react-icons/fa";
 interface TaskCardProps {
   task: Task;
   onApprove?: (code: string) => void;
-  onReject?: (task: Task) => void;
+  onReject?: (code: string) => void;
 }
 
 const getPriorityColor = (priority: Task["priority"]) => {
@@ -28,9 +28,9 @@ export const TaskCard = ({ task, onApprove, onReject }: TaskCardProps) => {
     .map((word) => word[0]?.toUpperCase())
     .join("");
 
-  const isPending = task.isApproved === false;
-  const isApproved = task.isApproved === true;
-  const isRejected = task.isApproved === false;
+  const isPending = task.approvalStatus === "pending";
+  const isApproved = task.approvalStatus === "approved";
+  const isRejected = task.approvalStatus === "reject";
 
   return (
     <div className="w-full border rounded-xl shadow-sm overflow-hidden bg-white my-3">
@@ -74,7 +74,7 @@ export const TaskCard = ({ task, onApprove, onReject }: TaskCardProps) => {
               Onaylandı
             </div>
           )}
-          {task.status === "rejected" && (
+          {isRejected && (
             <div className="bg-red-500 text-white text-xs font-semibold text-center px-6 py-1 rounded-md w-full max-w-[300px] mx-auto flex items-center justify-center gap-1">
               <MdCancel />
               <span>Reddedildi</span>
@@ -90,7 +90,7 @@ export const TaskCard = ({ task, onApprove, onReject }: TaskCardProps) => {
           </div>
 
           {/* Assignee and Date */}
-          <div className="flex justify-between items-center mt-4">
+          <div className="flex justify-start items-center mt-4">
             {/* Profil Kutusu */}
             <div
               className="w-8 h-8 rounded-full text-white flex items-center justify-center text-xs font-semibold shadow"
@@ -99,7 +99,7 @@ export const TaskCard = ({ task, onApprove, onReject }: TaskCardProps) => {
             >
               {assigneeInitials}
             </div>
-            <span className="text-[2vh] text-black">{task.assignee?.username}</span>
+            <span className="text-[2vh] ml-[2vh] flex-1 text-black">{task.assignee?.username.toUpperCase()}</span>
 
             {/* Tarih */}
             <span className="text-xs text-gray-400">
@@ -118,7 +118,7 @@ export const TaskCard = ({ task, onApprove, onReject }: TaskCardProps) => {
               </button>
               <button
                 className="flex-1 flex items-center justify-center gap-1 px-3 py-2 rounded bg-red-500 text-white hover:bg-red-600 font-semibold text-sm"
-                onClick={() => onReject?.(task)}
+                onClick={() => onReject?.(task._id)}
               >
                 <MdCancel /> Reddet
               </button>

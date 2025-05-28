@@ -127,9 +127,27 @@ const ProjectFiles: React.FC = () => {
       </div>
 
       <div className="space-y-4">
-        {files.map((file) => (
-          <FileRow key={file._id} icon={getIconByExtension(file.fileName)} file={file} handleDownload={handleDownload} handleDelete={handleDelete} />
-        ))}
+        {files.map((f) => {
+          const att: Attachment = {
+            _id: f._id,
+            fileUrl: f.fileUrl,
+            fileName: f.fileName,
+            taskId: f.taskId,
+            uploadedBy: f.uploadedBy,
+            uploadedDate: f.createdAt,
+            createdAt: f.createdAt,
+            updatedAt: f.createdAt,
+          };
+          return (
+            <FileRow
+              key={att._id}
+              icon={getIconByExtension(att.fileName)}
+              file={att}
+              handleDownload={() => handleDownload(att)}
+              handleDelete={() => handleDelete(att._id)}
+            />
+          );
+        })}
       </div>
     </div>
   );

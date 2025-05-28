@@ -4,7 +4,7 @@ import type { Task } from "@/types/task";
 interface TaskListProps {
   tasks: Task[];
   onApprove?: (code: string) => void;
-  onReject?: (task: Task) => void;
+  onReject?: (code: string) => void;
 }
 
 export const TaskList = ({ tasks, onApprove, onReject }: TaskListProps) => {

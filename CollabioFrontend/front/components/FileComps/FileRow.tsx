@@ -9,7 +9,7 @@ const FileRow = ({ file, handleDownload, handleDelete, icon }: { file: Attachmen
             key={file._id}
             className="flex items-center bg-white p-4 rounded shadow-sm"
         >
-            <div className="mr-4 text-2xl">{icon}</div> 
+            <div className="mr-4 text-2xl">{icon}</div>
             <div className="flex-1">
                 <div className="font-semibold text-lg text-black">{file.fileName}</div>
                 <div className="text-sm text-gray-700 flex gap-4 items-center">
@@ -17,7 +17,7 @@ const FileRow = ({ file, handleDownload, handleDelete, icon }: { file: Attachmen
                         <FaCalendarAlt className="text-[#8972e7]" /> {file.createdAt}
                     </span>
                     <span className="flex items-center gap-1">
-                        <FaUser className="text-[#8972e7]" /> {file.uploadedBy}
+                        <FaUser className="text-[#8972e7]" /> {file.uploadedBy.toString()}
                     </span>
                 </div>
             </div>
