@@ -8,7 +8,7 @@ const getByUser = async (userId) => {
       { owner: userId },
       { members: userId }
     ]
-  }).populate('owner', 'username').populate('members', 'username email');
+  }).populate('owner', 'username email').populate('members', 'username email');
 };
 
 const getById = async (id) => await Project.findById(id).populate('members owner');
@@ -21,7 +21,15 @@ const addMember = async (projectId, userId) => {
     projectId,
     { $addToSet: { members: userId } }, // $addToSet tekrarı engeller
     { new: true }
-  ).populate('owner', 'username').populate('members', 'username email');
+  ).populate('owner', 'username email').populate('members', 'username email');
+};
+
+const removeMember = async (projectId, userId) => {
+  return await Project.findByIdAndUpdate(
+    projectId,
+    { $pull: { members: userId } }, // $pull ile üyeyi çıkarıyoruz
+    { new: true }
+  ).populate('owner', 'username email').populate('members', 'username email');
 };
 
 module.exports = {
@@ -30,5 +38,6 @@ module.exports = {
   getById,
   update,
   remove,
-  addMember
+  addMember,
+  removeMember
 };

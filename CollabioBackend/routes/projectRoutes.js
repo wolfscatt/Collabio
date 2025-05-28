@@ -22,5 +22,8 @@ router.delete('/:id', auth, checkPermission(PERMISSIONS.DELETE), controller.remo
 // POST: Projeye üye ekle
 router.post('/:id/members', auth, controller.addMember);
 
+// DELETE: Projeden üye çıkar
+router.delete('/:id/members', auth, controller.removeMember);
+
 
 module.exports = router;

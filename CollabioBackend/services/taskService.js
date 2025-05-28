@@ -1,7 +1,7 @@
 const taskRepo = require('../repositories/taskRepository');
 const Role = require('../models/Role');
 const ACTIONTYPES = require('../enums/actionTypeEnum');
-const APPROVAL_STATUSES = require('../enums/approvalStatusEnum');
+const APPROVAL_STATUSES = require('../enums/approvedEnum');
 const withLogging = require('../utils/withLogging');
 
 // Task oluşturma servisi - reporter ise görevi oluşturan kişidir.

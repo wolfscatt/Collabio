@@ -46,3 +46,12 @@ exports.addMember = async (req, res, next) => {
   }
 };
 
+exports.removeMember = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const project = await projectService.removeMemberFromProject(req.params.id, email, req.user);
+    res.json(project);
+  } catch (err) {
+    next(err);
+  }
+};
