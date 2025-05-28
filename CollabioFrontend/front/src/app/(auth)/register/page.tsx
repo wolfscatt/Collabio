@@ -1,14 +1,92 @@
 "use client";
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from "next/navigation";
 import RegInput from "../../../../components/RegInput";
 import api from "@/lib/api";
-import { FaSpinner } from 'react-icons/fa';
-import { FaExclamationCircle } from 'react-icons/fa';
+import { FaSpinner, FaExclamationCircle, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { AxiosError } from 'axios';
+
+// Parola gücü kontrolü için yardımcı fonksiyonlar
+const checkPasswordStrength = (password: string) => {
+  const checks = {
+    length: password.length >= 8,
+    hasUpperCase: /[A-Z]/.test(password),
+    hasLowerCase: /[a-z]/.test(password),
+    hasNumber: /[0-9]/.test(password),
+    hasSpecialChar: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+  };
+
+  const strength = Object.values(checks).filter(Boolean).length;
+  const strengthText = strength <= 2 ? "Zayıf" : strength <= 3 ? "Orta" : strength <= 4 ? "İyi" : "Güçlü";
+  const strengthColor = strength <= 2 ? "red" : strength <= 3 ? "yellow" : strength <= 4 ? "blue" : "green";
+
+  return {
+    checks,
+    strength,
+    strengthText,
+    strengthColor
+  };
+};
+
+const PasswordStrengthIndicator = ({ password }: { password: string }) => {
+  const { checks, strengthText, strengthColor } = checkPasswordStrength(password);
+
+  const getColorClass = (color: string) => {
+    switch (color) {
+      case "red": return "text-red-500";
+      case "yellow": return "text-yellow-500";
+      case "blue": return "text-blue-500";
+      case "green": return "text-green-500";
+      default: return "text-gray-500";
+    }
+  };
+
+  return (
+    <div className="mt-2 space-y-2">
+      <div className="flex items-center gap-2">
+        <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: `${(checkPasswordStrength(password).strength / 5) * 100}%` }}
+            className={`h-full ${strengthColor === "red" ? "bg-red-500" :
+              strengthColor === "yellow" ? "bg-yellow-500" :
+                strengthColor === "blue" ? "bg-blue-500" :
+                  "bg-green-500"
+              }`}
+          />
+        </div>
+        <span className={`text-sm font-medium ${getColorClass(strengthColor)}`}>
+          {strengthText}
+        </span>
+      </div>
+      <div className="grid grid-cols-3 gap-x-4 gap-y-1 text-xs">
+        <div className="flex items-center gap-1.5">
+          {checks.length ? <FaCheckCircle className="text-green-500" /> : <FaTimesCircle className="text-red-500" />}
+          <span className={checks.length ? "text-green-500" : "text-red-500"}>8+ karakter</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          {checks.hasUpperCase ? <FaCheckCircle className="text-green-500" /> : <FaTimesCircle className="text-red-500" />}
+          <span className={checks.hasUpperCase ? "text-green-500" : "text-red-500"}>Büyük harf</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          {checks.hasLowerCase ? <FaCheckCircle className="text-green-500" /> : <FaTimesCircle className="text-red-500" />}
+          <span className={checks.hasLowerCase ? "text-green-500" : "text-red-500"}>Küçük harf</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          {checks.hasNumber ? <FaCheckCircle className="text-green-500" /> : <FaTimesCircle className="text-red-500" />}
+          <span className={checks.hasNumber ? "text-green-500" : "text-red-500"}>Rakam</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          {checks.hasSpecialChar ? <FaCheckCircle className="text-green-500" /> : <FaTimesCircle className="text-red-500" />}
+          <span className={checks.hasSpecialChar ? "text-green-500" : "text-red-500"}>Özel karakter</span>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const Page = () => {
   const [username, setUsername] = useState("");
@@ -73,13 +151,13 @@ const Page = () => {
   };
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
       className="min-h-screen w-full bg-register bg-fixed bg-cover bg-no-repeat flex flex-col items-center justify-center"
     >
-      <motion.div 
+      <motion.div
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.2, type: "spring" }}
@@ -96,13 +174,13 @@ const Page = () => {
           height={100}
         />
       </motion.div>
-      <motion.div 
+      <motion.div
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.4, type: "spring" }}
         className="bg-specPink-300 border-r-8 border-b-8 border-specPink-200 backdrop-blur-sm p-4 rounded-3xl w-[28vw] mt-[4vh]"
       >
-        <motion.h1 
+        <motion.h1
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.5 }}
@@ -110,7 +188,7 @@ const Page = () => {
         >
           Üye Olun
         </motion.h1>
-        <motion.form 
+        <motion.form
           initial="hidden"
           animate="visible"
           variants={{
@@ -120,7 +198,7 @@ const Page = () => {
               }
             }
           }}
-          className="space-y-4 mb-[2vh]" 
+          className="space-y-4 mb-[2vh]"
           onSubmit={handleRegister}
         >
           <RegInput
@@ -139,14 +217,16 @@ const Page = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <RegInput
-            title="Şifre"
-            id="password"
-            type="password"
-            placeHolder="Şifrenizi giriniz"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div>
+            <RegInput
+              title="Şifre"
+              id="password"
+              type="password"
+              placeHolder="Şifrenizi giriniz"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
           <RegInput
             title="Şifre Tekrar"
             id="confirmPassword"
@@ -155,6 +235,7 @@ const Page = () => {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
+          {password && <PasswordStrengthIndicator password={password} />}
           <motion.button
             whileHover={{ scale: 1.02, backgroundColor: "rgb(107 33 168)" }}
             whileTap={{ scale: 0.98 }}
@@ -173,13 +254,13 @@ const Page = () => {
 
         <AnimatePresence mode="wait">
           {message && (
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               className={`text-[1.6vh] flex items-center gap-2 justify-center text-center font-medium mb-2 ${messageType === "success" ? "text-green-600" : "text-red-600"}`}
             >
-              {messageType === "success" ? 
+              {messageType === "success" ?
                 <motion.div
                   animate={{ rotate: 360 }}
                   transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
@@ -192,8 +273,7 @@ const Page = () => {
             </motion.p>
           )}
         </AnimatePresence>
-
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}

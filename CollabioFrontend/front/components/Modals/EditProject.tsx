@@ -124,7 +124,7 @@ const EditProject: React.FC<EditProjectProps> = ({ isOpen, onClose, project, onP
     }, [project, fetchProjectMembers]);
 
     // Proje sahibi kontrolü - localStorage'dan gelen kullanıcı ID'si ile karşılaştırma
-    const isOwner = currentUser?.id === project?.owner;
+    const isOwner = currentUser?.id === project?.owner._id;
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

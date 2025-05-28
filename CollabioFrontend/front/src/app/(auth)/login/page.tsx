@@ -47,13 +47,13 @@ const Page = () => {
   };
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
       className="min-h-screen w-full bg-register bg-fixed bg-cover bg-no-repeat flex flex-col items-center justify-center"
     >
-      <motion.div 
+      <motion.div
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.2, type: "spring" }}
@@ -70,13 +70,13 @@ const Page = () => {
           height={100}
         />
       </motion.div>
-      <motion.div 
+      <motion.div
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.4, type: "spring" }}
         className="bg-specPink-300 border-r-8 border-b-8 border-specPink-200 backdrop-blur-sm p-4 rounded-3xl w-[28vw] mt-[4vh]"
       >
-        <motion.h1 
+        <motion.h1
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.5 }}
@@ -84,7 +84,7 @@ const Page = () => {
         >
           Giriş Yapın
         </motion.h1>
-        <motion.form 
+        <motion.form
           initial="hidden"
           animate="visible"
           variants={{
@@ -94,7 +94,7 @@ const Page = () => {
               }
             }
           }}
-          className="space-y-4 mb-[2vh]" 
+          className="space-y-4 mb-[2vh]"
           onSubmit={handleLogin}
         >
           <RegInput
@@ -131,13 +131,13 @@ const Page = () => {
 
         <AnimatePresence mode="wait">
           {message && (
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               className={`text-[1.6vh] flex items-center gap-2 justify-center text-center font-medium mb-2 ${messageType === "success" ? "text-green-600" : "text-red-600"}`}
             >
-              {messageType === "success" ? 
+              {messageType === "success" ?
                 <motion.div
                   animate={{ rotate: 360 }}
                   transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
@@ -151,7 +151,7 @@ const Page = () => {
           )}
         </AnimatePresence>
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}

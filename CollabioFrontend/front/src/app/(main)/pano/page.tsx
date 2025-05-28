@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import TaskBoard from '../../../../components/PanoComps/TaskBoard';
 import CreateTaskModal from '../../../../components/PanoComps/CreateTaskModal';
@@ -18,7 +18,7 @@ const Page = () => {
   const { selectedProject } = useSelectedProject();
   const [isOwner, setIsOwner] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [reload, setReload] = useState(false);
+  const [taskVersion, setTaskVersion] = useState(0);
 
   // 1) LocalStorage'daki user.id ile project.owner karşılaştır
   useEffect(() => {
@@ -34,6 +34,10 @@ const Page = () => {
       : (selectedProject.owner as ProjectOwner)?._id;
     setIsOwner(projOwnerId === myId);
   }, [selectedProject]);
+
+  const handleTaskCreated = useCallback(() => {
+    setTaskVersion(prev => prev + 1);
+  }, []);
 
   const handleAddClick = () => {
     if (!isOwner) {
@@ -103,7 +107,7 @@ const Page = () => {
             <CreateTaskModal
               open={isModalOpen}
               onClose={() => setModalOpen(false)}
-              onTaskCreated={() => setReload(prev => !prev)}
+              onTaskCreated={handleTaskCreated}
             />
           </motion.div>
         )}
@@ -115,7 +119,7 @@ const Page = () => {
         transition={{ delay: 0.4 }}
         className="flex h-full w-full"
       >
-        <TaskBoard reload={reload} />
+        <TaskBoard key={taskVersion} />
       </motion.div>
     </motion.div>
   );

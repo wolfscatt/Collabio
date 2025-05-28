@@ -31,7 +31,7 @@ const TopBar = () => {
     }
   }, []);
   return (
-    <header className="bg-gradient-to-b from-[var(--color-dark)] to-[var(--color-light)] rounded-b-[16px]">
+    <header className="bg-gradient-to-b from-[var(--color-dark)] to-[var(--color-light)] ">
       <div className="p-4 h-[10vh]   flex justify-between border-l border-[var(--color-medium)] items-center box-border">
         <div className="flex rounded-md  text-gray-200 p-2 px-4 items-center gap-4">
           <h1 className="text-[3vh] font-semibold">{selectedProject?.name}</h1>

@@ -1,11 +1,13 @@
 "use client";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DragDropContext, DropResult } from "@hello-pangea/dnd";
 import TaskColumn from "./TaskColumn";
 import { useProjectTasks } from "@/hooks/useProjectTasks";
 import { useSelectedProject } from "@/context/SelectedProjectContext";
 import api from "@/lib/api";
 import { toast } from "react-toastify";
+import { Task } from '@/types/task';
+import TaskCard from './TaskCard';
 
 interface TaskCardData {
   id: string;
@@ -36,7 +38,11 @@ const statusMap: Record<keyof ColumnsType, string> = {
   "tamam": "done",
 };
 
-export default function TaskBoard({ reload }: { reload: boolean }) {
+interface TaskBoardProps {
+  reload?: boolean; // Opsiyonel hale getir
+}
+
+const TaskBoard: React.FC<TaskBoardProps> = ({ reload }) => {
   const { selectedProject } = useSelectedProject();
   const { tasks, loading } = useProjectTasks(!!selectedProject?._id);
   const [columns, setColumns] = useState<ColumnsType>({
@@ -154,4 +160,6 @@ export default function TaskBoard({ reload }: { reload: boolean }) {
       </div>
     </DragDropContext>
   );
-}
+};
+
+export default TaskBoard;

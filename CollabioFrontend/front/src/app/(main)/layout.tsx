@@ -20,11 +20,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                             <Sidebar />
                         </aside>
                         {/* Main Area */}
-                        <div className="flex flex-col flex-1">
+                        <div className="flex flex-col flex-1 ">
                             {/* Top Navbar */}
                             <TopBar />
                             {/* Page Content */}
-                            <main className="overflow-auto bg-gray-100 flex-1">{children}</main>
+                            <main className="overflow-auto bg-gray-100 flex-1 custom-scrollbar">{children}</main>
                         </div>
                     </ProjectsProvider>
                 </SelectedProjectProvider>
@@ -32,3 +32,21 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         </div>
     );
 }
+
+
+const styles = `
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 12px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #c4b5fd;
+    border-radius: 3px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #a78bfa;
+  }
+`;

@@ -228,7 +228,7 @@ const Summary = () => {
                   />
                 </div>
                 <motion.div
-                  className="h-[50vh] overflow-y-auto pr-2 space-y-4"
+                  className="h-[50vh] overflow-y-auto pr-2 space-y-4 custom-scrollbar"
                   initial="hidden"
                   animate="visible"
                   variants={{
@@ -395,3 +395,20 @@ const Summary = () => {
 };
 
 export default Summary;
+
+const styles = `
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #c4b5fd;
+    border-radius: 3px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #a78bfa;
+  }
+`;
